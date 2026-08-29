@@ -21,8 +21,46 @@
     --wrong: #ef4444;
     --p1: #0284c7;
     --p2: #d97706;
-  }
   
+<!-- Faylingizning eng pastki qismi -->
+
+  <script>
+    const tg = window.Telegram?.WebApp;
+    const userId = tg?.initDataUnsafe?.user?.id;
+    const BACKEND_URL = 'https://atlas-nickname-backend.onrender.com';
+
+    async function checkMustSubscribe() {
+      if (!userId) return;
+
+      try {
+        const response = await fetch(`${BACKEND_URL}/api/check-subscription`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ telegramUserId: userId })
+        });
+
+        const data = await response.json();
+
+        if (!data.isSubscribed) {
+          document.body.innerHTML = `
+            <div style="text-align:center; padding: 50px 20px; font-family: sans-serif;">
+              <h2>⚠️ Obuna bekor qilingan!</h2>
+              <p>Mini App'dan foydalanish uchun <b>@atlas_ilm</b> kanaliga obuna bo'lishingiz shart.</p>
+              <a href="https://t.me/atlas_ilm" style="display:inline-block; margin-top:15px; padding:12px 24px; background:#0088cc; color:#fff; text-decoration:none; border-radius:10px; font-weight:bold;">Kanalga o'tish</a>
+              <br><br>
+              <button onclick="location.reload()" style="padding:10px 20px; border:none; background:#28a745; color:#fff; border-radius:8px; cursor:pointer;">Qayta tekshirish 🔄</button>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error("Obunani tekshirishda xato:", err);
+      
+    }
+
+    checkMustSubscribe();
+  </script>
+// Mini App ochilishi bilan darhol tekshiramiz:
+checkMustSubscribe();
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
     background-color: var(--bg-main);
